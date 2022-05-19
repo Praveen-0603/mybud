@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mybud/api_service/get_all_tasks.dart';
 import 'package:mybud/api_service/get_savedcards.dart';
+import 'package:mybud/api_service/get_unreadcount.dart';
 import 'package:mybud/api_service/update.dart';
 import 'package:mybud/main.dart';
 import 'package:mybud/screens/buddy_main_page.dart';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var tasks;
   saved() async {
     cards = await getsavedCards(tokenProfile?.token);
-     tasks = await gettasks(tokenProfile?.token);
+    tasks = await gettasks(tokenProfile?.token);
   }
 
   @override
@@ -61,19 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     GestureDetector(
                       onTap: () {
                         // Navigator.of(context).pushNamed('/tasks_screen');
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => TaskScreen()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => TaskScreen()));
                       },
-                      child: basic(Color(0xFFFFFFFF), 'Goals',
-                       tasks == null ? '0 Goals':
-                       tasks['success'] == false
-                      ? 'No Goals added'
-                      : tasks['data'][0]['tasks1'] == null
-                          ? '0 Goals'
-                          :   '${tasks['data'][0]['tasks1'].length} Goals',
-                          'assets/Vector (9).png', 110),
+                      child: basic(
+                          Color(0xFFFFFFFF),
+                          'Goals',
+                          tasks == null
+                              ? '0 Goals'
+                              : tasks['success'] == false
+                                  ? 'No Goals added'
+                                  : tasks['data'][0]['tasks1'] == null
+                                      ? '0 Goals'
+                                      : '${tasks['data'][0]['tasks1'].length} Goals',
+                          'assets/Vector (9).png',
+                          110),
                     ),
                     SizedBox(
                       height: 15 * _heightScale,
@@ -124,8 +127,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Navigator.of(context).pushNamed(MessageScreen.route);
                       },
-                      child: basic(const Color(0xFFFFFFFF), 'Messages',
-                          '', 'assets/Group (10).png', 35),
+                      child: FutureBuilder(
+                        future: getUnreadCount(tokenProfile?.token),
+                        initialData: 0,
+                        builder: (context, messages) {
+                          return basic(
+                            const Color(0xFFFFFFFF),
+                            'Messages',
+                            messages.data.toString() + ' Messages',
+                            'assets/Group (10).png',
+                            35,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

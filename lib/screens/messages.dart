@@ -10,6 +10,7 @@ import 'package:mybud/screens/buddy_main_page.dart';
 import 'package:mybud/screens/individ_message.dart';
 import 'package:mybud/screens/new_message.dart';
 import 'package:mybud/widgets/custom_navigation_bar.dart';
+import 'package:mybud/widgets/show_dialog.dart';
 import 'package:mybud/widgets/token_profile.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -29,8 +30,8 @@ class _MessageScreenState extends State<MessageScreen>
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,8 +62,7 @@ class _MessageScreenState extends State<MessageScreen>
   // List msgs = [];
   connect() async {
     //   await userid();
-    socket =
-        IO.io("https://mybud.herokuapp.com", <String, dynamic>{
+    socket = IO.io("https://mybud.herokuapp.com", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
@@ -201,7 +201,9 @@ class _MessageScreenState extends State<MessageScreen>
                               Row(
                                 children: [
                                   Text(
-                                    " Currently you do not have a buddy assigned, Go to ""Find A Buddy"" and look for a friend.",
+                                    " Currently you do not have a buddy assigned, Go to "
+                                    "Find A Buddy"
+                                    " and look for a friend.",
                                     style: GoogleFonts.poppins(
                                       color: const Color(0xFF5E3E79),
                                       fontSize: _widthScale * 10,
@@ -248,19 +250,30 @@ class _MessageScreenState extends State<MessageScreen>
           itemBuilder: (context, index) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: _widthScale * 10),
-              child: CircleAvatar(
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0xFFB9B9B9),
-                radius: 36 * _widthScale,
+              child: GestureDetector(
+                onTap: () {
+                  if (res != null) {
+                    showMentorDialog(
+                      context: context,
+                      ontapYes: () {},
+                      ontapNo: () {},
+                    );
+                  }
+                },
+                child: CircleAvatar(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFFB9B9B9),
+                  radius: 36 * _widthScale,
 
-                backgroundImage: res == null
-                    ? NetworkImage('')
-                    : NetworkImage(res['buddydetails'] != null
-                        ? res['buddydetails'][index]['image']['location']
-                        : res['data']['image']['location']),
+                  backgroundImage: res == null
+                      ? NetworkImage('')
+                      : NetworkImage(res['buddydetails'] != null
+                          ? res['buddydetails'][index]['image']['location']
+                          : res['data']['image']['location']),
 
-                //  backgroundImage:FileImage(uploads/97c31224-185c-4399-b050-27c9f2fd4ae9.png),
-                //    AssetImage('97c31224-185c-4399-b050-27c9f2fd4ae9.png')
+                  //  backgroundImage:FileImage(uploads/97c31224-185c-4399-b050-27c9f2fd4ae9.png),
+                  //    AssetImage('97c31224-185c-4399-b050-27c9f2fd4ae9.png')
+                ),
               ),
             );
           }),
@@ -284,9 +297,9 @@ class _MessageScreenState extends State<MessageScreen>
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 4 * _heightScale),
             child: GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 socket.dispose();
-                 await connect();
+                await connect();
                 // print('lopi$msgs');
                 Navigator.push(
                     context,

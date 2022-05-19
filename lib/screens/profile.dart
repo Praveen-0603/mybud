@@ -244,7 +244,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       child: Text(
                                         ' ${profile['buddyid']}',
                                         style: GoogleFonts.poppins(
-                                            fontSize: 12, color: Color(0xFF828282)),
+                                            fontSize: 12,
+                                            color: Color(0xFF828282)),
                                         // softWrap: true,
                                       ),
                                     ),
@@ -261,9 +262,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       onTap: () {
                                         FlutterClipboard.copy(
                                                 profile['buddyid'].toString())
-                                            .then((value) => Fluttertoast.showToast(
-                                                msg: 'Buddy ID Copied!',
-                                                gravity: ToastGravity.BOTTOM));
+                                            .then((value) =>
+                                                Fluttertoast.showToast(
+                                                    msg: 'Buddy ID Copied!',
+                                                    gravity:
+                                                        ToastGravity.BOTTOM));
                                         //.then(( value ) => print('copied'));
                                       },
                                       child: Icon(
@@ -281,7 +284,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                           field("Your full name", profile['username']),
                           fields("Your Current Occupation",
                               profile['Info']['profession']),
-                          fields(profile['Info']['profession'] != "Student" ? "Your Work Experience" : "Course",
+                          fields(
+                              profile['Info']['profession'] != "Student"
+                                  ? "Your Work Experience"
+                                  : "Course",
                               profile['Info']['details']),
                           fields("Your Reason", profile['objective']['title']),
                           Container(
@@ -372,7 +378,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       child: Padding(
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: Text(
-                                          profile['skillsets'][index].toString().trim(),
+                                          profile['skillsets'][index]
+                                              .toString()
+                                              .trim(),
                                           style: GoogleFonts.poppins(
                                               fontSize: 16,
                                               color: Color(0xFFB6B6B6),

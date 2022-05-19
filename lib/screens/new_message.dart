@@ -12,6 +12,7 @@ import 'package:mybud/screens/message_bio.dart';
 import 'package:mybud/screens/messages.dart';
 import 'package:mybud/widgets/custom_navigation_bar.dart';
 //import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:mybud/widgets/message_model.dart';
 import 'package:mybud/widgets/own_message_card.dart';
 import 'package:mybud/widgets/reply_card.dart';
@@ -60,6 +61,7 @@ class _IndividualPageState extends State<IndividualPage> {
     //socket.dispose();
 
     connect();
+    markasRead();
 
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -68,6 +70,20 @@ class _IndividualPageState extends State<IndividualPage> {
         });
       }
     });
+  }
+
+  Future<void> markasRead() async {
+    try {
+      await http.post(
+        Uri.parse('https://mybud.herokuapp.com/user/markChatAsRead'),
+        body: {
+          'user1': widget.userid,
+          'user2': widget.buddyid,
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   setMessage(String type, String message) {
@@ -109,16 +125,16 @@ class _IndividualPageState extends State<IndividualPage> {
     print('userid : ${widget.userid}');
     print('userfriend : ${widget.buddyid}');
     // MessageModel messageModel = MessageModel(sourceId: widget.sourceChat.id.toString(),targetId: );
-    socket =
-        IO.io("https://mybud.herokuapp.com", <String, dynamic>{
+    socket = IO.io("https://mybud.herokuapp.com", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
-      socket.emit('updatesocketid', {"userid":widget.userid,"matcheduser": widget.buddyid});
-  //  socket.
+    socket.emit('updatesocketid',
+        {"userid": widget.userid, "matcheduser": widget.buddyid});
+    //  socket.
     // socket.emit('updatesocketid', {"userid":widget.userid,"matcheduser": widget.buddyid});
-   // socket.on(event, (data) => null)
-socket.connect();
+    // socket.on(event, (data) => null)
+    socket.connect();
     socket.onConnect((data) {
       //  socket.emit('updatesocketid', {"userid":widget.userid,"matcheduser": widget.buddyid});
       print(" Socket Connected Successfully");
@@ -144,8 +160,7 @@ socket.connect();
           if (msg[index]['sender'] == widget.buddyid) {
             print('destination');
 
-            setMessage(
-                "destination", msg[index]['message']);
+            setMessage("destination", msg[index]['message']);
           }
           //  _scrollController.animateTo(_scrollController.position.maxScrollExtent,
           // duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -381,60 +396,61 @@ socket.connect();
                                       }
                                     },
                                     decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25),
-                                        borderSide: BorderSide.none
-                                      ),
-                                      hintText: "Type a message",
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      isDense: true
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            borderSide: BorderSide.none),
+                                        hintText: "Type a message",
+                                        hintStyle:
+                                            TextStyle(color: Colors.grey),
+                                        isDense: true
 
-                                      // prefixIcon: IconButton(
-                                      //   icon: Icon(
-                                      //     show
-                                      //         ? Icons.keyboard
-                                      //         : Icons.emoji_emotions_outlined,
-                                      //   ),
-                                      //   onPressed: () {
-                                      //     if (!show) {
-                                      //       focusNode.unfocus();
-                                      //       focusNode.canRequestFocus = false;
-                                      //     }
-                                      //     setState(() {
-                                      //       show = !show;
-                                      //     });
-                                      //   },
-                                      // ),
+                                        // prefixIcon: IconButton(
+                                        //   icon: Icon(
+                                        //     show
+                                        //         ? Icons.keyboard
+                                        //         : Icons.emoji_emotions_outlined,
+                                        //   ),
+                                        //   onPressed: () {
+                                        //     if (!show) {
+                                        //       focusNode.unfocus();
+                                        //       focusNode.canRequestFocus = false;
+                                        //     }
+                                        //     setState(() {
+                                        //       show = !show;
+                                        //     });
+                                        //   },
+                                        // ),
 
-                                      // suffixIcon: Row(
-                                      //   mainAxisSize: MainAxisSize.min,
-                                      //   children: [
-                                      //     IconButton(
-                                      //       icon: Icon(Icons.attach_file),
-                                      //       onPressed: () {
-                                      //         showModalBottomSheet(
-                                      //             backgroundColor:
-                                      //                 Colors.transparent,
-                                      //             context: context,
-                                      //             builder: (builder) =>
-                                      //                 bottomSheet());
-                                      //       },
-                                      //     ),
-                                      //     IconButton(
-                                      //       icon: Icon(Icons.camera_alt),
-                                      //       onPressed: () {
-                                      //         // Navigator.push(
-                                      //         //     context,
-                                      //         //     MaterialPageRoute(
-                                      //         //         builder: (builder) =>
-                                      //         //             CameraApp()));
-                                      //       },
-                                      //     ),
-                                      //   ],
-                                      // ),
+                                        // suffixIcon: Row(
+                                        //   mainAxisSize: MainAxisSize.min,
+                                        //   children: [
+                                        //     IconButton(
+                                        //       icon: Icon(Icons.attach_file),
+                                        //       onPressed: () {
+                                        //         showModalBottomSheet(
+                                        //             backgroundColor:
+                                        //                 Colors.transparent,
+                                        //             context: context,
+                                        //             builder: (builder) =>
+                                        //                 bottomSheet());
+                                        //       },
+                                        //     ),
+                                        //     IconButton(
+                                        //       icon: Icon(Icons.camera_alt),
+                                        //       onPressed: () {
+                                        //         // Navigator.push(
+                                        //         //     context,
+                                        //         //     MaterialPageRoute(
+                                        //         //         builder: (builder) =>
+                                        //         //             CameraApp()));
+                                        //       },
+                                        //     ),
+                                        //   ],
+                                        // ),
 
-                                      // contentPadding: EdgeInsets.all(5),
-                                    ),
+                                        // contentPadding: EdgeInsets.all(5),
+                                        ),
                                   ),
                                 ),
                               ),
@@ -459,8 +475,8 @@ socket.connect();
                                         _scrollController.animateTo(
                                             _scrollController
                                                 .position.maxScrollExtent,
-                                            duration:
-                                                const Duration(milliseconds: 300),
+                                            duration: const Duration(
+                                                milliseconds: 300),
                                             curve: Curves.easeOut);
                                         sendMessage(
                                           _controller.text,
@@ -586,14 +602,15 @@ socket.connect();
 
   Widget emojiSelect() {
     return EmojiChoose(
-        rows: 4,
-        columns: 7,
-        onEmojiSelected: (emoji, category) {
-          print(emoji);
-          setState(() {
-            _controller.text = _controller.text + emoji.emoji;
-          });
-        },
-      recommendKeywords: ["people"],);
+      rows: 4,
+      columns: 7,
+      onEmojiSelected: (emoji, category) {
+        print(emoji);
+        setState(() {
+          _controller.text = _controller.text + emoji.emoji;
+        });
+      },
+      recommendKeywords: ["people"],
+    );
   }
 }

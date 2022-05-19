@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -78,7 +77,7 @@ Future<void> _messageHandler(RemoteMessage message) async {
       message.hashCode,
       message.notification?.title,
       message.notification?.body,
-      NotificationDetails(
+      const NotificationDetails(
           android: AndroidNotificationDetails(
         'high_importance_channel', // id
         'High Importance Notifications', // title
@@ -131,7 +130,7 @@ void main() async {
   // _notificationHandler();
   FirebaseMessaging.onMessage.listen((event) async {
     //  prefs.setString('status', "Pending");
-   // localNotification.testNotification();
+    // localNotification.testNotification();
     // localNotification.showNotification(event.data.)
     localNotification.showNotification(event.data);
     print('event ${event.data['title']}');
@@ -167,14 +166,15 @@ class _MyAppState extends State<MyApp> {
     getUserData();
   }
 
-  update () async {
+  update() async {
     var token = await firebaseMessaging.getToken();
     Updates().token(fcmtoken: token, token: tokenProfile!.token);
   }
 
   void getUserData() async {
     if (await loginPreference!.getLoginStatus()) {
-      tokenProfile = TokenProfile.fromJson(await tokenPreference.getTokenPreferenceData());
+      tokenProfile =
+          TokenProfile.fromJson(await tokenPreference.getTokenPreferenceData());
       print("User Data");
       //  print(constant.api);
     }
